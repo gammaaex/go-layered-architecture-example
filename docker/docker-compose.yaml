@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: example_mysql
+    command: >
+      mysqld
+      --character-set-server=utf8
+      --collation-server=utf8_general_ci
+      --skip-character-set-client-handshake
+      --log-error=/var/log/mysql/error.log
+      --slow_query_log
+      --slow_query_log_file=/var/log/mysql/slow_query.log
+      --long_query_time=5
+      --log-queries-not-using-indexes
+      --general-log
+      --general-log-file=/var/log/mysql/general.log
+    env_file: .env
+    ports:
+      - $MYSQL_LISTEN_PORT:3306
+    volumes:
+      - ./mysql/data:$MYSQL_DATA_DIR
+      - ./mysql/init:/docker-entrypoint-initdb.d
+
+  apache:
+    build: ./apache
+    container_name: example_apache
+    ports:
+      - $APACHE_LISTEN_PORT:80
+    env_file: .env
+    volumes:
+      - ../public:/var/www/html
+      - ./apache/sites-available:/etc/apache2/sites-available
+    depends_on:
+      - mysql
+
+  go:
+    image: golang:1.12
+    container_name: example_go
+    volumes:
+      - ../:/go/src
+    tty: true
+    working_dir: /go/src
+    environment:
+      GO111MODULE: 'on'
+
+  phpmyadmin:
+    container_name: example_pma
+    image: phpmyadmin/phpmyadmin:4.8
+    env_file: .env
+    ports:
+      - $PHPMYADMIN_LISTEN_PORT:80
+    volumes:
+      - ./phpmyadmin/sessions:/var/lib/php7/session
+    depends_on:
+      - mysql
