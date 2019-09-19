@@ -3,18 +3,18 @@ package handler
 import (
 	"encoding/json"
 	"go-layered-architecture-example/pkg/application/input"
-	"go-layered-architecture-example/pkg/domain/service"
+	"go-layered-architecture-example/pkg/application/usecase"
 	"go-layered-architecture-example/pkg/presentation/http/request"
 	"go-layered-architecture-example/pkg/presentation/http/response"
 	"net/http"
 )
 
 type User struct {
-	service service.User
+	userUsecase usecase.User
 }
 
-func NewUser(service service.User) *User {
-	return &User{service: service}
+func NewUser(userUsecase usecase.User) *User {
+	return &User{userUsecase: userUsecase}
 }
 
 func (h *User) Create(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +26,7 @@ func (h *User) Create(w http.ResponseWriter, r *http.Request) {
 	in := &input.UserCreate{}
 	req.Write(in)
 
-	out, err := h.service.Create(in)
+	out, err := h.userUsecase.Create(in)
 	if err != nil {
 		return
 	}

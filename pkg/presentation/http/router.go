@@ -10,6 +10,7 @@ import (
 func Register(r *chi.Mux) {
 	repository := registry.NewRepository()
 	service := registry.NewService()
+	usecase := registry.NewUsecase()
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("This Go app work on CGI"))
@@ -17,7 +18,8 @@ func Register(r *chi.Mux) {
 
 	userRepository := repository.NewUser()
 	userService := service.NewUser(userRepository)
-	userHandler := handler.NewUser(userService)
+	userUsecase := usecase.NewUser(userService)
+	userHandler := handler.NewUser(userUsecase)
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/", userHandler.Create)
 	})

@@ -8,6 +8,6 @@ type User struct {
 	Name string `json:"name"`
 }
 
-func (r *User) Write(in *input.UserCreate) {
-	in.Name = r.Name
+func (req *User) Write(in *input.UserCreate) {
+	in.Name = req.Name
 }

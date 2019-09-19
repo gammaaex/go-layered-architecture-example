@@ -1,10 +1,7 @@
 package service
 
-import (
-	"go-layered-architecture-example/pkg/application/input"
-	"go-layered-architecture-example/pkg/application/output"
-)
+import "go-layered-architecture-example/pkg/domain/model"
 
 type User interface {
-	Create(*input.UserCreate) (*output.UserCreate, error)
+	Create(*model.User) error
 }

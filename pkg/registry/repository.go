@@ -4,7 +4,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"go-layered-architecture-example/pkg/domain/repository"
-	"go-layered-architecture-example/pkg/infrastructure/mysql/gateway"
+	"go-layered-architecture-example/pkg/infrastructure/mysql/repository_impl"
 )
 
 type Repository interface {
@@ -29,5 +29,5 @@ func createDBConnection() *gorm.DB {
 }
 
 func (*repositoryImpl) NewUser() repository.User {
-	return gateway.NewUser(createDBConnection())
+	return repository_impl.NewUser(createDBConnection())
 }
